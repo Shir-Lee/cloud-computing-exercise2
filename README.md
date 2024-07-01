@@ -105,6 +105,7 @@ The mean runtime for each of the lambdas (in ms):
 5.	Adding / removing user from a group: 35
 6.	Send a message to a group: 52
 7.	Read messages: 10 for cache, 20 for DB
+
 The range is 35-66ms. Specifically, the response time for reading the messages when going to DB is twice then when the cache is hit. In the worse-case X=66 which is ~15K responses per second. However, reading messages from cache have X=10 which is 100K responses per second, and under the assumption such call is a substantial volume of the calls in massaging system.
 
 Assuming that 1000s users have 1million requests a day (24 hours), then it requires ~12 requests a second (1M/24/3600=11.6). Meaning that 10,000s of users requires about 120 requests a second, and millions of users requires about 12K. Hence the system can handle all of these cases, and scaling to millions of users.
