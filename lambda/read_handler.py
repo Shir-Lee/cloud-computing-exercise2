@@ -7,6 +7,7 @@ from datetime import datetime
 group_members_table = 'group_members_table'
 group_messages_table = 'group_messages_table'
 user_messages_table = 'user_messages_table'
+ttl_seconds = 86400  # Key will expire in a day
 
 
 def read_messages_lambda(event, context):
@@ -22,6 +23,9 @@ def read_messages_lambda(event, context):
         client = redis.Redis(host=redis_host, port=6379, db=0)
         # records = client.get(user_id)
         cache_messages = client.lrange(user_id, 0, -1)
+        # ttl
+        client.expire(user_id, ttl_seconds)
+        # check messages in cache
         if cache_messages:
             min_timestamp_datetime = datetime.strptime(min_timestamp, '%Y-%m-%d %H:%M:%S.%f')
             oldest_message = cache_messages[-1]

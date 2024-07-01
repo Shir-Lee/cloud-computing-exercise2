@@ -8,7 +8,7 @@ import pymysql
 users_table = 'users_table'
 blocks_table = 'blocks_table'
 user_messages_table = 'user_messages_table'
-cache_length = 10
+cache_length = 20
 
 
 def register_lambda(event, context):

@@ -3,8 +3,9 @@ import pulumi_aws as aws
 import json
 import pulumi_aws_apigateway as apigateway
 
-db_user = "shir"
-db_password = "YourPassword123"
+config = pulumi.Config()
+db_user = config.require("db_user")
+db_password = config.require_secret("db_password")
 cache_port = 6379
 db_port = 3306
 
@@ -154,7 +155,7 @@ def create_lambda(file_name, function_name, role, vpc_config, variables=None):
 
     api = apigateway.RestAPI(f"{function_name}_api",
                              routes=[
-                                 apigateway.RouteArgs(path=f"/{function_name}", method=apigateway.Method.GET,  # TODO
+                                 apigateway.RouteArgs(path=f"/{function_name}", method=apigateway.Method.POST,
                                                       event_handler=fn)
                              ])
 
@@ -242,7 +243,7 @@ def create_db(vpc_id, subnet_ids):
         cluster_identifier=aurora_cluster.id,
         instance_class="db.r5.large",
         engine="aurora-mysql",
-        publicly_accessible=True
+        publicly_accessible=False
     )
 
     return aurora_cluster
@@ -276,8 +277,3 @@ create_lambda("group", "send_group", lambda_role, lambda_vpc_config, variables=e
 create_lambda("read", "read_messages", lambda_role, lambda_vpc_config, variables=env_variables)
 # https://prefcdtqm0.execute-api.eu-west-3.amazonaws.com/stage/read_messages?user_id=7ad43600-fb44-4572-b0df-24dd2ffba3fe&min_timestamp=2024-07-01 15:31:00.0
 
-# zip -r ../lambda.zip .
-# shir 3bf3d96c-2cc9-42b4-ab74-a05ba1d21b0d
-# nir 7ad43600-fb44-4572-b0df-24dd2ffba3fe
-# sol 0d1d2daa-6819-4ad9-8994-4cf97c6e015a
-# bambis 8357cda7-6b68-4b66-b07b-60647eca717c

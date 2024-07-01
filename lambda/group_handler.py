@@ -9,7 +9,7 @@ users_table = 'users_table'
 groups_table = 'groups_table'
 group_members_table = 'group_members_table'
 group_messages_table = 'group_messages_table'
-cache_length = 10
+cache_length = 20
 
 
 def create_group_lambda(event, context):

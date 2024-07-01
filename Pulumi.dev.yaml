@@ -1,5 +1,7 @@
 config:
   aws:region: eu-west-3
+  cloud-computing-exercise2:db_password: YourPassword123
+  cloud-computing-exercise2:db_user: shir
   pulumi:tags:
     pulumi:template: serverless-aws-python
   pulumi:template: serverless-aws-python
