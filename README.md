@@ -2,20 +2,20 @@
 
 A cloud-based messaging system (backend side), which is serverless.  
 The system includes the following actions, each has its own endpoint:
-●	Register a new user (generating a new id). It returns the user id.
+1. Register a new user (generating a new id). It returns the user id.
 -	Example: POST/register?user_name=shir
-●	Block a user from sending a message (note that ‘to_block=1’ apply blocking, and ‘to_block=0’ remove blocking).
+2. Block a user from sending a message (note that ‘to_block=1’ apply blocking, and ‘to_block=0’ remove blocking).
 -	Example: POST/ block?blocking_user_id=3&blocked_user_id=1&to_block=1
-●	Send a message from a user to another user (via its id), unless blocking is applied.
+3. Send a message from a user to another user (via its id), unless blocking is applied.
 -	Example: POST/ send?sending_user_id=1&receiving_user_id=3&message_text=hi
-●	Creating a group. It returns the group id.
+4.	Creating a group. It returns the group id.
 -	Example: POST/create_group?group_name=bambis
-●	Adding / removing users (note that ‘to_be_added=1’ adds the user to the group, while ‘to_be_added=0’ removes from the group).
+5.	Adding / removing users (note that ‘to_be_added=1’ adds the user to the group, while ‘to_be_added=0’ removes from the group).
 Groups have no admin and users can add/remove themselves from the group using the group’s id (as in telegram). Also there can be multiple groups with same name (group id is unique).
 -	Example: POST/ update_group?user_id=1&group_id=2e86f3d2-9705-4acb-b1c7-980e5bb05ada&to_be_added=1
-●	Sending messages to a group.
+6. Sending messages to a group.
 -	Example: POST/send_group?sending_user_id=1&group_id=2e86f3d2-9705-4acb-b1c7-980e5bb05ada&message_text=hello_group
-●	Users can check for their messages (assuming users check at least once a minute).
+7. Users can check for their messages (assuming users check at least once a minute).
 Example: POST/read_messages?user_id=2&min_timestamp=2024-07-01 09:10:00.0
 
 ## Getting Started
@@ -98,13 +98,13 @@ The system is fully built on scalable components:
 
 Each lambda runs in ~X milliseconds (which is 0.001X seconds), and can run up to 1000 times in parallel. Hence, the number of requests that can be handles in a second: (1000/X)*1000=1M/X.
 The mean runtime for each of the lambdas (in ms):
-●	Register: 42
-●	Block: 35
-●	Send a message to a user: 66
-●	Create a group: 52
-●	Adding / removing user from a group: 35
-●	Send a message to a group: 52
-●	Read messages: 10 for cache, 20 for DB
+1.	Register: 42
+2.	Block: 35
+3.	Send a message to a user: 66
+4.	Create a group: 52
+5.	Adding / removing user from a group: 35
+6.	Send a message to a group: 52
+7.	Read messages: 10 for cache, 20 for DB
 The range is 35-66ms. Specifically, the response time for reading the messages when going to DB is twice then when the cache is hit. In the worse-case X=66 which is ~15K responses per second. However, reading messages from cache have X=10 which is 100K responses per second, and under the assumption such call is a substantial volume of the calls in massaging system.
 
 Assuming that 1000s users have 1million requests a day (24 hours), then it requires ~12 requests a second (1M/24/3600=11.6). Meaning that 10,000s of users requires about 120 requests a second, and millions of users requires about 12K. Hence the system can handle all of these cases, and scaling to millions of users.
