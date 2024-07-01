@@ -1,0 +1,5 @@
+config:
+  aws:region: eu-west-3
+  pulumi:tags:
+    pulumi:template: serverless-aws-python
+  pulumi:template: serverless-aws-python
